@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package proto;
+
+import "gc/proto/formula.proto";
+
+message TableMetadata {
+  message Field {
+    string name = 1;
+    Type type = 2;
+    string hint = 3;
+  }
+  string path = 1;
+  string name = 2;
+  repeated Field fields = 3;
+  string hint = 4;
+}
+
+message DatabaseTable {
+  message FieldMapping {
+    string std_name = 1;
+    repeated string alias = 2;
+  }
+  string db_name = 1;
+  string meta_path = 2;
+  string meta_name = 3;
+  repeated FieldMapping fields = 4;
+}
+
+message Task {
+  message InputMapping {
+    string collection_name = 1;
+    string database_name = 2;
+  }
+  string path = 1;
+  string name = 2;
+  repeated InputMapping input_mapping = 3;
+  string pipeline_name = 4;
+  string output_mapping = 5;
+  bool enabled = 6;
+}
+
+message PathName {
+  string path = 1;
+  string name = 2;  
+}

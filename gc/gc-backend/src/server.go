@@ -6,6 +6,7 @@ import (
 
 	pb "git.corp.angel-salon.com/gc/proto"
 	"golang.org/x/net/context"
+	"strings"
 	//_ "github.com/mattn/go-oci8"
 )
 
@@ -27,14 +28,64 @@ func NewServer() *Server {
 }
 
 func (s *Server) DeleteDB(ctx context.Context, req *pb.Filter) (*pb.Empty, error) {
+	sql := "DELETE FROM " + quoteIdentifier(req.Input) + " WHERE " + ParseExpression(req.Expression)
+	fmt.Println("Exec SQL: ", sql)
+	err := ExecSQL(sql)
+	if err != nil {
+		return nil, err
+	}
 	return &pb.Empty{}, nil
 }
 
 func (s *Server) InsertDB(ctx context.Context, req *pb.NewRecords) (*pb.Empty, error) {
+	quotedColumns := []string{}
+	oneRowPlaceholders := []string{}
+	for _, col := range req.Records.Columns {
+		quotedColumns = append(quotedColumns, quoteIdentifier(col))
+		oneRowPlaceholders = append(oneRowPlaceholders, "?")
+	}
+
+	valuesPlaceholer := []string{}
+	values := []interface{}{}
+	for _, row := range req.Records.Row {
+		for _, col := range row.Value {
+			values = append(values, col)
+		}
+		valuesPlaceholer = append(valuesPlaceholer, "(" + strings.Join(oneRowPlaceholders, ", ") + ")")
+	}
+	
+	sql := "INSERT INTO " + quoteIdentifier(req.Table) + 
+		"(" + strings.Join(quotedColumns, ",") + ") VALUES" + strings.Join(valuesPlaceholer, ", ");
+
+    fmt.Println(sql, values)
+	err := ExecSQL(sql, values...)
+	if err != nil {
+		return nil, err
+	}
 	return &pb.Empty{}, nil
 }
 
-func (s *Server) UpdateDB(ctx context.Context, req *pb.ResultSet) (*pb.Empty, error) {
+func (s *Server) UpdateDB(ctx context.Context, req *pb.UpdateRecords) (*pb.Empty, error) {
+	updateColumns := []string{}
+	if len(req.Records.Row) != 1 {
+		return nil, fmt.Errorf("更新的数据必须为1行")
+	}
+
+	if len(req.Records.Columns) != len(req.Records.Row[0].Value) {
+		return nil, fmt.Errorf("更新的列数量和值数量不一致")
+	}
+
+	values := []interface{}{}
+	for idx, col := range req.Records.Columns {
+		values = append(values, req.Records.Row[0].Value[idx])
+		updateColumns = append(updateColumns, quoteIdentifier(col) + " = ?")
+	}
+	sql := "UPDATE " + quoteIdentifier(req.Table) + " SET " + strings.Join(updateColumns, ", ") + " WHERE " + ParseExpression(req.Condition)
+	fmt.Println(sql, values)
+	err := ExecSQL(sql, values...)
+	if err != nil {
+		return nil, err
+	}
 	return &pb.Empty{}, nil
 }
 

@@ -7,7 +7,7 @@ import "gc/proto/formula.proto";
 // general computing service
 service Computer {
   rpc QueryDB(Pipeline) returns (ResultSet) {}
-  rpc DeleteDB(DelRecords) returns (Empty) {}
+  rpc DeleteDB(Filter) returns (Empty) {}
   rpc InsertDB(NewRecords) returns (Empty) {}
   rpc UpdateDB(UpdateRecords) returns (Empty) {}
 }
@@ -26,11 +26,6 @@ message Pipelines {
   repeated Pipeline pipelines = 1;
 }
 
-message DelRecords {
-  string table = 1;
-  Filter condition = 2;
-}
-
 message NewRecords {
   string table = 1;
   ResultSet records = 2;
@@ -39,7 +34,7 @@ message NewRecords {
 message UpdateRecords {
   string table = 1;
   ResultSet records = 2;
-  Filter condition = 3;
+  Expression condition = 3;
 }
 
 message Empty {

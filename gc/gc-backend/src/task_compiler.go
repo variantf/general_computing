@@ -64,7 +64,7 @@ func ParseExpression(exp *pb.Expression) string {
 		case pb.Operator_DIVIDE:
 			exp_sql = "(" + ParseExpression(oper.GetOperands()[0]) + " / " + ParseExpression(oper.GetOperands()[1]) + ")"
 		case pb.Operator_EQ:
-			exp_sql = "(" + ParseExpression(oper.GetOperands()[0]) + "is not distinct from " + ParseExpression(oper.GetOperands()[1]) + ")"
+			exp_sql = "(" + ParseExpression(oper.GetOperands()[0]) + /*"is not distinct from "*/ " = " + ParseExpression(oper.GetOperands()[1]) + ")"
 		case pb.Operator_EXISTS:
 			exp_sql = "(" + ParseExpression(oper.GetOperands()[0]) + " IS NOT NULL)"
 		case pb.Operator_EXP:
@@ -100,7 +100,7 @@ func ParseExpression(exp *pb.Expression) string {
 			}
 			exp_sql = "(" + strings.Join(exps, " * ") + ")"
 		case pb.Operator_NE:
-			exp_sql = "(" + ParseExpression(oper.GetOperands()[0]) + "is distinct from " + ParseExpression(oper.GetOperands()[1]) + ")"
+			exp_sql = "(" + ParseExpression(oper.GetOperands()[0]) + /*"is distinct from "*/ " <> " + ParseExpression(oper.GetOperands()[1]) + ")"
 		case pb.Operator_NOT:
 			exp_sql = "NOT(" + ParseExpression(oper.GetOperands()[0]) + ")"
 		case pb.Operator_OR:
