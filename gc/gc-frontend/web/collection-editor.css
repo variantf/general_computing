@@ -1,0 +1,13 @@
+.type {
+  color: gray;
+  font-size: smaller;
+  padding: 10px;
+}
+.op {
+  font-size: small;
+  text-decoration: none;
+  padding: 3px;
+}
+.table {
+  margin-top: 20px;
+}

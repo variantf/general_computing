@@ -1,0 +1,6 @@
+input {
+    line-height: 1.5em;
+}
+input.large {
+    width: 20em;
+}

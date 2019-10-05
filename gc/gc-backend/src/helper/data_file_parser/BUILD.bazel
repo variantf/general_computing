@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "csv.go",
+        "main.go",
+        "oracle.go",
+        "xlsx.go",
+    ],
+    importpath = "git.corp.angel-salon.com/gc/gc-backend/src/helper/data_file_parser",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//gc/proto:go_default_library",
+        "@com_github_lib_pq//:go_default_library",
+        "@com_github_tealeg_xlsx//:go_default_library",
+    ],
+)

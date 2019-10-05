@@ -1,0 +1,14 @@
+.holder {
+  display: inline-block;
+  padding: 5px;
+  margin: 5px;
+  min-width: 40px;
+}
+.holderNormal {
+  composes: holder;
+  border: 2px dashed lightblue;
+}
+.holderActive {
+  composes: holder;
+  border: 4px dashed lightblue;
+}

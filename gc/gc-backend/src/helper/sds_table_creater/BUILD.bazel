@@ -1,0 +1,21 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["sds_table_creater.go"],
+    importpath = "git.corp.angel-salon.com/gc/gc-backend/src/helper/sds_table_creater",
+    visibility = ["//visibility:private"],
+    deps = [
+        "@com_github_lib_pq//:go_default_library",
+        "@com_github_tealeg_xlsx//:go_default_library",
+        "@com_gitlab_jsq_general_computing//src/proto:go_default_library",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_x_net//context:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "sds_table_creater",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+)

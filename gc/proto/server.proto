@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package proto;
+
+import "gc/proto/formula.proto";
+
+// general computing service
+service Computer {
+  rpc QueryDB(Pipeline) returns (ResultSet) {}
+  rpc DeleteDB(DelRecords) returns (Empty) {}
+  rpc InsertDB(NewRecords) returns (Empty) {}
+  rpc UpdateDB(UpdateRecords) returns (Empty) {}
+}
+
+message ResultSet {
+  repeated string columns = 1;
+  repeated Result row = 2;
+}
+
+message Result {
+  repeated string value = 1;
+}
+
+
+message Pipelines {
+  repeated Pipeline pipelines = 1;
+}
+
+message DelRecords {
+  string table = 1;
+  Filter condition = 2;
+}
+
+message NewRecords {
+  string table = 1;
+  ResultSet records = 2;
+}
+
+message UpdateRecords {
+  string table = 1;
+  ResultSet records = 2;
+  Filter condition = 3;
+}
+
+message Empty {
+}

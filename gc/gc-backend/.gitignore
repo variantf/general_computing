@@ -1,0 +1,9 @@
+__pycache__
+data/sheets.json
+data/he_14_map.py
+data/he_15_map.py
+*.exe
+*.exe~
+src/main/grpc_server/grpc_server
+src/main/http_proxy_server/http_proxy_server
+.vscode

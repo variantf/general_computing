@@ -1,0 +1,19 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["risk_management_importer.go"],
+    importpath = "git.corp.angel-salon.com/gc/gc-backend/src/helper/risk_management_importer",
+    visibility = ["//visibility:private"],
+    deps = [
+        "@com_github_lib_pq//:go_default_library",
+        "@in_gopkg_mgo_v2//:go_default_library",
+        "@in_gopkg_mgo_v2//bson:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "risk_management_importer",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,182 @@
+syntax = "proto3";
+
+package proto;
+
+// 数据类型
+enum Type {
+    FLOAT = 0;
+    STRING = 1;
+    BOOLEAN = 2;
+    DATETIME = 3;
+}
+
+// 一套流水线，输入多张表，中间产生多张表，输出多张表
+message Pipeline {
+    repeated Collection collections = 1;
+    string path = 2;
+    string name = 3;
+    string result_meta_name = 4;
+    string tax_type = 5;
+    string industry_code = 6;
+    string industry_name = 7;
+    map<string,string> tags = 8;
+}
+
+// 一个表
+message Collection {
+    string name = 1;
+
+    oneof body { // 结果的来源方法
+        Input input = 2;
+        Sample sample = 3;
+        Projection projection = 4;
+        Filter filter = 5;
+        Join join = 6;
+        Group group = 7;
+    }
+}
+
+// 输入表
+message Input {
+    string meta_name = 1;
+}
+
+// 随机取样，对一个表的行以一定概率随机取样，维持列名不变
+message Sample {
+    string input = 1; // 输入表名
+    double rate = 2; // 取样率[0, 1]
+}
+
+// 投影操作
+message Projection {
+    message Field {
+        string name = 1;
+        Expression expression = 2;
+    }
+
+    string input = 1; // 输入表名
+    repeated Field fields = 2; // 投影出来的列
+}
+
+// 过滤操作
+message Filter {
+    string input = 1; // 输入表名
+    Expression expression = 2; // 当作过滤条件的列名
+}
+
+// 连接操作
+message Join {
+    // 左边表的一列等于右边表的一列
+    message Condition {
+        string left = 1;
+        string right = 2;
+    }
+
+    // 输出的一列
+    message Field {
+        string name = 1;
+        string field = 2; // 此表中的一个字段
+    }
+
+    enum Method {
+        INNER = 0;
+        LEFT = 1;
+        RIGHT = 2;
+        FULL = 3;
+    }
+
+    string left_input = 1; // 要连接的表名列表
+    string right_input = 2;
+    repeated Condition conditions = 3; // 连接条件
+    repeated Field left_fields = 4; // 输出的列
+    repeated Field right_fields = 5;
+    Method method = 6;
+}
+
+// 分组运算操作
+message Group {
+    message Field {
+        string name = 1;
+        Expression expression = 2;
+    }
+    string input = 1;
+    repeated string keys = 2;
+    repeated Field fields = 3;
+}
+
+// 单表内的运算
+message Expression {
+    oneof body {
+        Literal literal = 1;
+        string field = 2; // 取一列的值
+        Operation operation = 3;
+    }
+}
+
+// 字面常量
+message Literal {
+    oneof body {
+        double float_value = 1;
+        string string_value = 2;
+        bool boolean_value = 3;
+    }
+}
+
+// 计算
+message Operation {
+    Operator operator = 1;
+    repeated Expression operands = 2;
+}
+
+enum Operator {
+    // 算数运算
+    ADD = 0;
+    SUBTRACT = 1;
+    MULTIPLY = 2;
+    DIVIDE = 3;
+    MOD = 4;
+    POW = 5;
+    EXP = 6;
+    SQRT = 7;
+    LN = 8;
+    LOG2 = 9;
+    LOG10 = 10;
+    ABS = 11;
+    CEIL = 12;
+    TRUNC = 13;
+    FLOOR = 14;
+
+    // 关系运算
+    EQ = 15;
+    NE = 16;
+    LT = 17;
+    LTE = 18;
+    GT = 19;
+    GTE = 20;
+    EXISTS = 21;
+
+    // 逻辑运算
+    AND = 22;
+    OR = 23;
+    NOT = 24;
+
+    // 选择
+    COND = 25;
+
+    // 字符串
+    REGEX = 26;
+    CONCATE = 27;
+
+    SUM = 28;
+    AVG = 29;
+    MAX = 30;
+    MIN = 31;
+    COUNT = 32;
+
+    // 日期解析
+    YEAR = 33;
+    MONTH = 34;
+    DAY = 35;
+    //内容拼接
+    STRING_AGG=36;
+}

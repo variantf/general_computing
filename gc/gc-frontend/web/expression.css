@@ -1,0 +1,35 @@
+.expression {
+  display: inline-block;
+  padding: 5px;
+  font-size: small;
+  user-select: none;
+  cursor: move;
+}
+.expressionHover {
+  composes: expression;
+  background-color: whitesmoke;
+}
+.label {
+  font-size: small;
+  margin-right: 5px;
+  color: gray;
+}
+.operator {
+  font-size: small;
+  margin-bottom: 5px;
+}
+.operands {
+  margin-left: 2px;
+  padding-left: 5px;
+  border-left: 1px solid gray;
+}
+.operand {
+  display: flex;
+  align-items: center;
+}
+.op {
+  font-size: small;
+  margin-right: 5px;
+  color: gray;
+  text-decoration: none;
+}

@@ -1,0 +1,14 @@
+.collection {
+  display: inline-block;
+  padding: 5px;
+  font-size: small;
+  user-select: none;
+  cursor: move;
+  background-color: lightblue;
+}
+
+.type {
+  color: gray;
+  font-size: smaller;
+  padding: 3px;
+}
